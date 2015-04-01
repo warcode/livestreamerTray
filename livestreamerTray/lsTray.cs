@@ -21,6 +21,15 @@ namespace livestreamerTray
             this.ShowInTaskbar = false;
             this.Visible = false;
             notifyIcon1.Visible = true;
+
+            var menu = new ContextMenu();
+            menu.MenuItems.Add(0, new MenuItem("Exit", new System.EventHandler(Exit_Click)));
+            notifyIcon1.ContextMenu = menu;
+        }
+
+        private void Exit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         private void lsTray_Load(object sender, EventArgs e)
