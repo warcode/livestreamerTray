@@ -20,6 +20,7 @@ namespace livestreamerTray
 
             this.ShowInTaskbar = false;
             this.Visible = false;
+            notifyIcon1.Visible = true;
         }
 
         private void lsTray_Load(object sender, EventArgs e)
@@ -46,7 +47,7 @@ namespace livestreamerTray
 
             if(matches.Count == 0)
             {
-                notifyIcon1.ShowBalloonTip(250, "No Link Provided", "Copy a twitch.tv stream link before clicking here.", ToolTipIcon.None);
+                notifyIcon1.ShowBalloonTip(5, "No Link Provided", "Copy a twitch.tv stream link before clicking here.", ToolTipIcon.None);
                 return;
             }
             else
@@ -68,22 +69,29 @@ namespace livestreamerTray
             lsProcessContainer.StartInfo.RedirectStandardOutput = true; //true
             lsProcessContainer.StartInfo.CreateNoWindow = true; // true
             lsProcessContainer.StartInfo.UseShellExecute = false; // false
+            lsProcessContainer.EnableRaisingEvents = true;
+            lsProcessContainer.Exited += lsProcessContainer_Exited;
+
+            notifyIcon1.ShowBalloonTip(50, "Opening stream", url, ToolTipIcon.None);
+
             try
             {
-
-                notifyIcon1.ShowBalloonTip(100, "Opening stream", url, ToolTipIcon.None);
-
                 lsProcessContainer.Start();
-
-                if(lsProcessContainer.HasExited && lsProcessContainer.ExitCode == 1)
-                {
-                    notifyIcon1.ShowBalloonTip(250, "Error", "Could not upen that url", ToolTipIcon.Error);
-                }
             }
             catch (Exception ex)
             {
                 notifyIcon1.ShowBalloonTip(250, "Error", ex.Message, ToolTipIcon.Error);
                 this.Close();
+            }
+        }
+
+        void lsProcessContainer_Exited(object sender, EventArgs e)
+        {
+            var process = (Process)sender;
+
+            if (process.HasExited && process.ExitCode == 1)
+            {
+                notifyIcon1.ShowBalloonTip(50, "Error", "Could not upen that url", ToolTipIcon.Error);
             }
         }
     }
