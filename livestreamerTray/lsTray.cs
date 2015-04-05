@@ -102,6 +102,8 @@ namespace livestreamerTray
             {
                 notifyIcon1.ShowBalloonTip(50, "Error", "Could not upen that url", ToolTipIcon.Error);
             }
+
+            process.Close();
         }
     }
 }
